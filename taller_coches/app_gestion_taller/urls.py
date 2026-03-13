@@ -1,4 +1,5 @@
 from django.urls import path
+from . import views
 from .views import (lista_clientes, detalle_cliente, 
                     registrar_cliente, registrar_coche, registrar_servicio,
                     buscar_coche_por_matricula, buscar_coches_de_cliente, buscar_servicio, servicios_coche, buscar_cliente_por_nombre)
@@ -18,4 +19,8 @@ urlpatterns = [
     path('servicios/<int:servicio_id>/', buscar_servicio, name='buscar_servicio'),
     path('coches/<int:coche_id>/servicios/', servicios_coche, name='servicios_coche'),
     path('clientes/<str:nombre>/', buscar_cliente_por_nombre, name='buscar_cliente_por_nombre'),
+    
+    #PRACTICA 5
+    path('', views.inicio, name='inicio'),
+    path('acerca/', views.acerca_de, name='acerca'),
 ]
