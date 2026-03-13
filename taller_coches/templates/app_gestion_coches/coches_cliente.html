@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Vehículos de {{ cliente.nombre }}</title>
+</head>
+<body>
+
+    <div>
+        <h1>Gestión de Taller</h1>
+    </div>
+
+    <div class="info-cliente">
+        <h3>Propietario: <strong>{{ cliente.nombre }}</strong></h3>
+        <p>Email: {{ cliente.email }} | Teléfono: {{ cliente.telefono }}</p>
+    </div>
+    <h2>Listado de Vehículos Asociados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Matrícula</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# Bucle para recorrer la lista de coches #}
+            {% for coche in coches %}
+                <tr>
+                    <td>{{ coche.id }}</td>
+                    <td>{{ coche.marca }}</td>
+                    <td>{{ coche.modelo }}</td>
+                    <td><a href="{% url 'buscar_coche_por_matricula' coche.matricula %}">{{ coche.matricula }}</a></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Este cliente no tiene coches registrados actualmente.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

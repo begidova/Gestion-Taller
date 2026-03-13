@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Servicio: {{ servicio.nombre }}</title>
+</head>
+<body>
+
+    <div>
+        <div>
+            <span>ID de Servicio: {{ servicio.id }}</span>
+            <h1>{{ servicio.nombre }}</h1>
+        </div>
+
+        <div>
+            <span>Descripción del Servicio:</span>
+            {% if servicio.descripcion %}
+                <p>{{ servicio.descripcion }}</p>
+            {% else %}
+                <p>No hay una descripción detallada para este servicio.</p>
+            {% endif %}
+        </div>
+
+        <h3>Vehículos que utilizan este servicio</h3>
+        <div>
+            {% for coche in coches %}
+            <a href="{% url 'buscar_coche_por_matricula' coche.matricula %}">
+                {{ coche.marca }} {{ coche.modelo }} ({{ coche.matricula }})
+            </a>
+            {% empty %}
+                <p>Actualmente no hay coches asociados a este servicio.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

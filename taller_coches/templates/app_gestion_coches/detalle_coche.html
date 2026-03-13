@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Coche - {{ coche.matricula }}</title>
+</head>
+<body>
+    <h1>Información del Vehículo</h1>
+    <div>
+        <h2>{{ coche.marca }} {{ coche.modelo }}</h2>
+        <hr>
+        <p>Matrícula: {{ coche.matricula }}</p>
+        <p>ID de Sistema: {{ coche.id }}</p>
+        {% if coche.cliente %}
+            <p>Propietario: {{ coche.cliente.nombre }}</p>
+        {% else %}
+            <p>Propietario: Sin asignar</p>
+        {% endif %}
+    </div>
+</body>
+</html>
