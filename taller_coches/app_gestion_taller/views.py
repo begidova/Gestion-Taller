@@ -3,7 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
 from .models import Cliente, Coche, Servicio, CocheServicio
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
+from .forms import ClienteForm, CocheForm, ServicioForm, CocheServicioForm
 
 #PRACTICA 3
 def lista_clientes(request):
@@ -11,7 +12,6 @@ def lista_clientes(request):
     #return JsonResponse(clientes, safe=False)
     clientes = Cliente.objects.all()
     return render(request, 'app_gestion_coches/lista_clientes.html', {'clientes': clientes})
-
 
 def detalle_cliente(request, cliente_id):
     #try:
@@ -188,6 +188,7 @@ def buscar_cliente_por_nombre(request, nombre):
     except Cliente.DoesNotExist:
         return JsonResponse({"error": "Cliente no encontrado"}, status=404)
 
+
 #PRACTICA 5
 def inicio(request):
     contexto = {'mensaje': '¡Bienvenido a mi sitio web!'}
@@ -195,3 +196,149 @@ def inicio(request):
 
 def acerca_de(request):
     return render(request, 'acerca.html', {'nombre': 'Bruno Egido'})
+
+
+#PRACTICA 6
+def nuevo_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_clientes')
+    else:
+        form = ClienteForm()
+    return render(request, 'app_gestion_coches/formulario.html', {'form': form, 'titulo': 'Nuevo Cliente'})
+
+def nuevo_coche(request):
+    if request.method == 'POST':
+        form = CocheForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_coches')
+    else:
+        form = CocheForm()
+    return render(request, 'app_gestion_coches/formulario.html', {'form': form, 'titulo': 'Nuevo Coche'})
+
+def nuevo_servicio(request):
+    if request.method == 'POST':
+        form = ServicioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_servicios')
+    else:
+        form = ServicioForm()
+    return render(request, 'app_gestion_coches/formulario.html', {'form': form, 'titulo': 'Nuevo Servicio'})
+
+def nuevo_coche_servicio(request):
+    if request.method == 'POST':
+        form = CocheServicioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_coches_servicios')
+    else:
+        form = CocheServicioForm()
+    return render(request, 'app_gestion_coches/formulario.html', {'form': form, 'titulo': 'Nuevo Servicio de Coche'})
+
+def lista_coches(request):
+    coches = Coche.objects.all()
+    return render(request, 'app_gestion_coches/lista_coches.html', {'coches': coches})
+
+def lista_servicios(request):
+    servicios = Servicio.objects.all()
+    return render(request, 'app_gestion_coches/lista_servicios.html', {'servicios': servicios})
+
+def lista_coches_servicios(request):
+    cochesServicios = CocheServicio.objects.all()
+    return render(request, 'app_gestion_coches/lista_coches_servicios.html', {'cochesServicios': cochesServicios})
+
+def editar_coche(request, coche_id):
+    coche = get_object_or_404(Coche, id=coche_id)
+    if request.method == 'POST':
+        form = CocheForm(request.POST, instance=coche)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_coches')
+    else:
+        form = CocheForm(instance=coche)
+    
+    return render(request, 'app_gestion_coches/formulario.html', {
+        'form': form, 
+        'titulo': 'Editar Coche: ' + coche.matricula
+    })
+
+def editar_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+    
+    return render(request, 'app_gestion_coches/formulario.html', {
+        'form': form, 
+        'titulo': 'Editar Cliente: ' + cliente.nombre
+    })
+
+def editar_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+    if request.method == 'POST':
+        form = ServicioForm(request.POST, instance=servicio)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_servicios')
+    else:
+        form = ServicioForm(instance=servicio)
+    
+    return render(request, 'app_gestion_coches/formulario.html', {
+        'form': form, 
+        'titulo': 'Editar Servicio: ' + servicio.nombre
+    })
+
+def editar_coche_servicio(request, coche_servicio_id):
+    servicioCoche = get_object_or_404(CocheServicio, id=coche_servicio_id)
+    if request.method == 'POST':
+        form = CocheServicioForm(request.POST, instance=servicioCoche)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_coches_servicios')
+    else:
+        form = CocheServicioForm(instance=servicioCoche)
+    
+    return render(request, 'app_gestion_coches/formulario.html', {
+        'form': form, 
+        'titulo': 'Editar Servicio de Coche: ' + servicioCoche.coche.matricula + ' ' + servicioCoche.servicio.nombre
+    })
+
+def eliminar_coche(request, coche_id):
+    coche = get_object_or_404(Coche, id=coche_id)
+    if request.method == 'POST':
+        coche.delete()
+        return redirect('lista_coches')
+    
+    return render(request, 'app_gestion_coches/confirmar_eliminacion.html', {'objeto': coche, 'modelo': 'coche', 'url': 'lista_coches'})
+
+def eliminar_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    if request.method == 'POST':
+        cliente.delete()
+        return redirect('lista_clientes')
+    
+    return render(request, 'app_gestion_coches/confirmar_eliminacion.html', {'objeto': cliente, 'modelo': 'cliente', 'url': 'lista_clientes'})
+
+def eliminar_servicio(request, servicio_id):
+    servicio = get_object_or_404(Servicio, id=servicio_id)
+    if request.method == 'POST':
+        servicio.delete()
+        return redirect('lista_servicios')
+    
+    return render(request, 'app_gestion_coches/confirmar_eliminacion.html', {'objeto': servicio, 'modelo': 'servicio', 'url': 'lista_servicios'})
+
+def eliminar_coche_servicio(request, coche_servicio_id):
+    coche_servicio = get_object_or_404(CocheServicio, id=coche_servicio_id)
+    if request.method == 'POST':
+        coche_servicio.delete()
+        return redirect('lista_coches_servicios')
+    
+    return render(request, 'app_gestion_coches/confirmar_eliminacion.html', {'objeto': coche_servicio, 'modelo': 'servicio de coche', 'url': 'lista_coches_servicios'})

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de servicios</title>
+</head>
+<body>
+    <h1>Servicios del taller</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Coche</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cocheServicio in cochesServicios %}
+            <tr>
+                <td>{{ cocheServicio.id }}</td>
+                <td><a href="{% url 'buscar_coche_por_matricula' cocheServicio.coche.matricula %}">{{ cocheServicio.coche }}</a></td>
+                <td><a href="{% url 'buscar_servicio' cocheServicio.servicio.id %}">{{ cocheServicio.servicio }}</a></td>
+                <td>{{ cocheServicio.fecha }}</td>
+                <td>
+                    <a href="{% url 'editar_coche_servicio' cocheServicio.id %}">Editar</a> | 
+                    <a href="{% url 'eliminar_coche_servicio' cocheServicio.id %}" style="color: red;">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
