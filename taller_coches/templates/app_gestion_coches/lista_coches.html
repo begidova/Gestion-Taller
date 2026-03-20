@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de coches</title>
+</head>
+<body>
+    <h1>Coches del taller</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Matricula</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for coche in coches %}
+            <tr>
+                <td>{{ coche.id }}</td>
+                <td>{{ coche.cliente }}</td>
+                <td>{{ coche.marca }}</td>
+                <td>{{ coche.modelo }}</td>
+                <td><a href="{% url 'buscar_coche_por_matricula' coche.matricula %}">{{ coche.matricula }}</a></td>
+                <td>
+                    <a href="{% url 'editar_coche' coche.id %}">Editar</a> | 
+                    <a href="{% url 'eliminar_coche' coche.id %}" style="color: red;">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
